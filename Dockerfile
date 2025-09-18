@@ -3,7 +3,7 @@
 # ==================================================
 
 # 第一阶段：构建阶段
-FROM openjdk:17-jdk-alpine AS builder
+FROM eclipse-temurin:17-jdk-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -17,17 +17,17 @@ COPY .mvn .mvn
 COPY mvnw .
 
 # 下载依赖（利用 Docker 层缓存）
-RUN mvn dependency:go-offline -B
+RUN ./mvnw dependency:go-offline -B
 
 # 复制源代码
 COPY src ./src
 
 # 构建应用
-RUN mvn clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
 # ==================================================
 # 第二阶段：运行时镜像
-FROM openjdk:17-jre-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 # 设置维护者信息
 LABEL maintainer="your-email@example.com"
